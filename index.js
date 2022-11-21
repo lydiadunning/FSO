@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
 
-const persons = [
+app.use(express.json())
+
+let persons = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -31,6 +33,52 @@ app.get('/', (request, response) => {
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
+
+app.get('/info', (request, response) => {
+  response.send(
+    `<p>Phonebook has info for ${persons.length} people</p> <p>${Date()}</p>`
+  )
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.find(person => person.id === id)
+  console.log(person)
+  if (person) {
+    response.send(`<p>${person.name}: ${person.number}<p>`)
+  } else {
+    response.status(404).end()
+  }
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  persons = persons.filter(person => person.id !== id)
+
+  response.status(204).end()
+})
+
+app.post('api/persons', (request, response) => {
+  const body = request.body
+  
+  if (!body.name) {
+    return response.status(400).json({
+      error: 'name required'
+    })
+  } else if (persons.find(person => persons.name = body.name)) {
+    return response.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+  const id = Math.random() * 500
+  const person = {
+    id: id,
+    name: body.name,
+    number: body.number
+  }
+  persons = persons.concat(person)
+})
+
 
 const PORT = 3001
 app.listen(PORT)
