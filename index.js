@@ -1,7 +1,13 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
+
+morgan.token('data', function getData (request) {
+  return JSON.stringify(request.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 let persons = [
     { 
@@ -31,6 +37,7 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
+  console.log(JSON.stringify(persons))
     response.json(persons)
 })
 
@@ -43,7 +50,6 @@ app.get('/info', (request, response) => {
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(person => person.id === id)
-  console.log(person)
   if (person) {
     response.send(`<p>${person.name}: ${person.number}<p>`)
   } else {
@@ -58,14 +64,14 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-app.post('api/persons', (request, response) => {
+app.post('/api/persons', (request, response) => {
   const body = request.body
   
   if (!body.name) {
     return response.status(400).json({
       error: 'name required'
     })
-  } else if (persons.find(person => persons.name = body.name)) {
+  } else if (persons.find(person => persons.name === body.name)) {
     return response.status(400).json({
       error: 'name must be unique'
     })
@@ -77,6 +83,7 @@ app.post('api/persons', (request, response) => {
     number: body.number
   }
   persons = persons.concat(person)
+  response.json(person)
 })
 
 
