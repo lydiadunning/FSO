@@ -1,0 +1,32 @@
+p, h4 {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 17rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+h4>span {
+  grid-column: 2 / span 1;
+}
+
+.message {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+}
+
+.hidden {
+  display: none;
+}
